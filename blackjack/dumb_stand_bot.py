@@ -20,10 +20,16 @@ def main():
         total_games += 1
 
     os.system("cls")
+    print(f"{counts}\n")
     print("-=RESULTS=-")
     print(f"Games: {total_games:,}")
+    print(f"Player blackjacks: {counts["p_blackjack"]:,}")
     print(f"Wins: {counts["win"]:,}")
+    print(f"Shoves: {counts["shove"]:,}")
+    print(f"Dealer blackjacks: {counts["d_blackjack"]:,}")
     print(f"Losses: {counts["lose"]:,}")
+    #print(f"Player busts: {counts["p_bust"]:,}")
+    print(f"Dealer busts: {counts["d_bust"]:,}")
     print(f"Average profit per hand: ${total_profit / NUM_HANDS:,}")
     print(f"Total profit: ${total_profit:,}")
 
