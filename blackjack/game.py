@@ -79,7 +79,46 @@ class Count:
 
 class Hand:
     def __init__(self):
-        return
+        self.cards = []
+
+    def add_card(self, card):
+        self.cards.append(card)
+
+    def score(self):
+        self.h_score = 0
+        self.num_aces = 0
+
+        for card in self.cards:
+            if card == "A":
+                self.num_aces += 1
+
+        for card in self.cards:
+            self.h_score += CARD_SCORES[card]
+
+        while self.num_aces >= 1 and self.h_score > 21:
+            self.num_aces -= 1
+            self.h_score -= 10
+        return self.h_score
+
+    def is_bust(self):
+        self.score()
+        if self.h_score > 21:
+            return True
+        else:
+            return False
+
+    def is_soft(self):
+        self.score()
+        if self.num_aces == 0:
+            return False
+        else:
+            return True
+    def is_blackjack(self):
+        self.score()
+        if len(self.cards) == 2 and self.h_score == 21:
+            return True
+        else:
+            return False
 
 class Round:
     def __init__(self):
