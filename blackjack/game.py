@@ -62,6 +62,8 @@ class Shoe:
         if len(self.cards) <= self.full_shoe * self.reshuffle_at:
             self.cards = DECK * self.num_decks
             random.shuffle(self.cards)
+            return True
+        return False
 
 class Count:
     def __init__(self):
@@ -113,6 +115,7 @@ class Hand:
             return False
         else:
             return True
+        
     def is_blackjack(self):
         self.score()
         if len(self.cards) == 2 and self.h_score == 21:
@@ -120,6 +123,99 @@ class Hand:
         else:
             return False
 
+    def upcard(self):
+        return self.cards[0]
+
+    def holecard(self):
+        return self.cards[1]
+
 class Round:
-    def __init__(self):
-        return
+    def __init__(self, rules, shoe, count, decision):
+        self.rules = rules
+        self.shoe = shoe
+        self.count = count
+        self.decision = decision
+        self.hand_1 = Hand()
+        self.hand_d = Hand()
+
+        for card in range(2):
+            self.hand_1.add_card(self.shoe.deal())
+            self.count.view(self.hand_1.cards[card])
+            self.hand_d.add_card(self.shoe.deal())
+        self.count.view(self.hand_d.upcard())
+
+    def check_blackjack(self):
+        if self.hand_1.is_blackjack() and self.hand_d.is_blackjack():
+            self.count.view(self.hand_d.holecard())
+            return 0
+        
+        elif self.hand_1.is_blackjack():
+            self.count.view(self.hand_d.holecard())
+            return self.rules.blackjack_payout
+        
+        elif self.hand_d.is_blackjack():
+            self.count.view(self.hand_d.holecard())
+            return -1
+
+        else:
+            return None
+
+    def choice(self):
+        while True:
+            answer = self.decision(self.hand_1, self.hand_d.upcard(), self.count.count)
+
+            if self.hand_1.is_bust():
+                break
+
+            elif answer == "hit":
+                card = self.shoe.deal()
+                self.hand_1.add_card(card)
+                self.count.view(card)
+
+            elif answer == "stand":
+                break
+
+    def dealer_hits(self):
+        score = self.hand_d.score()
+        if score < 17:
+            return True
+        if score == 17 and self.hand_d.is_soft() and self.rules.dealer_hits_soft_17:
+            return True
+        return False
+
+    def dealer_turn(self):
+        while self.dealer_hits():
+            card = self.shoe.deal()
+            self.hand_d.add_card(card)
+            self.count.view(card)
+
+    def who_wins(self):
+        score_1 = self.hand_1.score()
+        score_d = self.hand_d.score()
+
+        if self.hand_1.is_bust():
+            return -1
+
+        elif self.hand_d.is_bust():
+            return 1
+
+        elif score_1 == score_d:
+            return 0
+
+        elif score_1 > score_d:
+            return 1
+
+        elif score_1 < score_d:
+            return -1
+
+    def play(self):
+        blackjack = self.check_blackjack()
+
+        if blackjack != None:
+            return blackjack
+
+        self.choice()
+        if not self.hand_1.is_bust():
+            self.dealer_turn()
+        self.count.view(self.hand_d.holecard())
+        return self.who_wins()
