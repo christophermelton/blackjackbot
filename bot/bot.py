@@ -1,4 +1,4 @@
-import game
+from blackjack import game
 import os
 import tqdm
 
@@ -24,7 +24,8 @@ def play():
 
     os.system("cls")
     print(f"-=OUTCOME=-")
-    print(f"Average Profit: ${average_outcome}")
-    print(f"Total Profit: ${total_outcome}")
+    print(f"Average Profit: ${average_outcome:,}")
+    print(f"Total Profit: ${total_outcome:,}")
 
-play()
+if __name__ == "__main__":
+    play()
