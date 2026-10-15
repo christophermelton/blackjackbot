@@ -162,12 +162,12 @@ class Round:
 
     def choice(self):
         while True:
-            answer = self.decision(self.hand_1, self.hand_d.upcard(), self.count.count)
-
             if self.hand_1.is_bust():
                 break
 
-            elif answer == "hit":
+            answer = self.decision(self.hand_1, self.hand_d.upcard(), self.count.count)
+
+            if answer == "hit":
                 card = self.shoe.deal()
                 self.hand_1.add_card(card)
                 self.count.view(card)
