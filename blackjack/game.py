@@ -130,11 +130,12 @@ class Hand:
         return self.cards[1]
 
 class Round:
-    def __init__(self, rules, shoe, count, decision):
+    def __init__(self, rules, shoe, count, state, action):
         self.rules = rules
         self.shoe = shoe
         self.count = count
-        self.decision = decision
+        self.state = state
+        self.action = action
         self.hand_1 = Hand()
         self.hand_d = Hand()
 
@@ -165,7 +166,7 @@ class Round:
             if self.hand_1.is_bust():
                 break
 
-            answer = self.decision(self.hand_1, self.hand_d.upcard(), self.count.count)
+            answer = self.action(self.state(self.hand_1, self.hand_d.upcard()))
 
             if answer == "hit":
                 card = self.shoe.deal()
