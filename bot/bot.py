@@ -38,7 +38,7 @@ def agent():
     global states
 
     for _ in (range(NUM_ROUNDS)):
-        round = game.Round(rules, shoe, count, get_state, action)
+        round = game.Round(rules, shoe, count, get_state, policy)
         outcome = round.play()
         states = []
         total_outcome += outcome
